@@ -1,28 +1,44 @@
 import React from 'react';
+import { TouchableOpacity, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialIcons } from '@expo/vector-icons';
-import Home from './pages/Home';
 import Notification from './pages/Notification';
-import Profile from './pages/Profile';
 import Search from './pages/Search';
 import Farmacia from './pages/Farmacia';
 import { Medicamento } from "./pages/MedicamentoTela/Medicamento";
 import { Favorito } from "./pages/FavoritoTela/Favorito";
-import { createAppContainer } from 'react-navigation';
+import Profile from "./pages/Profile/index"
 import { Entypo, Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import Home from './pages/Home/index'
 
 const Tab = createBottomTabNavigator();
-
+const RootStack = createStackNavigator();
 const FarmaciaStack = createStackNavigator();
 
-const Rotas = createAppContainer(
-  createStackNavigator({
-    home: Home,
-    inicio: App.js,
-  })
-);
+const RootStackScreen = () => {
+  return (
+    <RootStack.Navigator>
+      <RootStack.Screen
+        name="Inicio"
+        component={Home}
+        options={{  
+          headerShown: false,
+          tabBarIcon: ({ size, color }) => (
+            <AntDesign name='user' size={size} color={color} />
+          ),
+        }}
+      />
+      <RootStack.Screen
+        name="MainTabNavigator"
+        component={MainTabNavigator}
+        options={{ headerShown: false }}
+        initialParams={{ screen: 'Perfil' }} // Adicionando parâmetro inicial
+      />
+    </RootStack.Navigator>
+  );
+};
 
 const FarmaciaStackScreen = () => {
   return (
@@ -46,7 +62,7 @@ const FarmaciaStackScreen = () => {
   );
 };
 
-const MainTabNavigator = () => {
+const MainTabNavigator = ({ navigation }) => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -61,11 +77,20 @@ const MainTabNavigator = () => {
       }}
     >
       <Tab.Screen
-        name='Inicio'
-        component={Profile}
+        name='Perfil' 
+        component={Profile} 
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Entypo name='home' size={size} color={color} />
+            <Entypo name= 'user' size={size} color={color} />
+          ),
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 15 }}
+              onPress={() => {
+                navigation.navigate('Inicio');
+              }}>
+              <Text style={{ color: 'blue' }}>Sair</Text>
+            </TouchableOpacity>
           ),
         }}
       />
@@ -96,17 +121,8 @@ const MainTabNavigator = () => {
           ),
         }}
       />
-   {/* <Tab.Screen
-        name='Perfil'
-        component={Profile}
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <Feather name='user' size={size} color={color} />
-          ),
-        }}
-      />*/}
-      </Tab.Navigator>
-      );
+    </Tab.Navigator>
+  );
 };
 
-export default MainTabNavigator;
+export default RootStackScreen;

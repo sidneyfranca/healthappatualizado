@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import Routes from './src/routes';
+import RootStackScreen from './src/routes';
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Routes/>
+      <RootStackScreen />
     </NavigationContainer>
   );
 }
