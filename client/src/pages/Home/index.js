@@ -47,8 +47,12 @@ export default function InicioScreen() {
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.buttonContainer}>
-        <Text>Cadastre-se</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('CadastroMedico')} style={styles.buttonContainer}>
+        <Text>Cadastro de Médico</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('CadastroPaciente')} style={styles.buttonContainer}>
+        <Text>Cadastro de Paciente</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.buttonContainer, styles.fabookButton]}>
@@ -111,7 +115,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 5,
     width: 250,
     borderRadius: 30,
   },

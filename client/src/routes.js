@@ -12,6 +12,8 @@ import Profile from "./pages/Profile/index"
 import { Entypo, Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Home from './pages/Home/index'
+import CadastromedView from './pages/Cadastros/cadastromed';
+import CadastroView from './pages/Cadastros/cadastropaciente';
 
 const Tab = createBottomTabNavigator();
 const RootStack = createStackNavigator();
@@ -34,7 +36,17 @@ const RootStackScreen = () => {
         name="MainTabNavigator"
         component={MainTabNavigator}
         options={{ headerShown: false }}
-        initialParams={{ screen: 'Perfil' }} // Adicionando parâmetro inicial
+        initialParams={{ screen: 'Perfil' }}
+      />
+      <RootStack.Screen
+        name="CadastroMedico"
+        component={CadastromedView}
+        options={{ title: 'Cadastro Médico' }}
+      />
+      <RootStack.Screen
+        name="CadastroPaciente"
+        component={CadastroView}
+        options={{ title: 'Cadastro Paciente' }}
       />
     </RootStack.Navigator>
   );
