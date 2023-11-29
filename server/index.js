@@ -1,16 +1,16 @@
-const express = require('express');
+const express = require ("express");
 const app = express();
-const mysql = require("mysql2");
+const mysql2 = require("mysql2");
 const cors = require("cors");
 
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createPool({
+const db = mysql2.createPool({
     host: "localhost",
     user: "root",
     password: "123123",
-    database: "bditens",
+    database: "bditens"
 })
 
 app.post("/favorito", (req, res) => {
@@ -55,6 +55,6 @@ app.delete("/item/:id_favorito", (req, res) => {
     })
 })
 
-app.listen(3001, () => {
+app.listen(3006, () => {
     console.log("rodando servidor");
-});
+})

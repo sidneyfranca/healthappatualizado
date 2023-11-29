@@ -2,8 +2,8 @@ import React, { useCallback, useState } from "react";
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import { EmployeeList } from "./EmployeeList";
 import { AntDesign } from "@expo/vector-icons";
-import { api } from "../../lib/api";
 import { useFocusEffect } from "@react-navigation/native";
+import { api } from "../../lib/api.";
 
 export function Medicamento() {
   const [itens, setItens] = useState([
@@ -11,8 +11,7 @@ export function Medicamento() {
       key: 1,
       name: "Abretia",
       role: "",
-      image:
-        "https://www.farmaciasespecializadas.com/ccstore/v1/images/?source=/file/v6398369037751509459/products/28938.png&height=475&width=475",
+      image:"https://www.farmaciasespecializadas.com/ccstore/v1/images/?source=/file/v6398369037751509459/products/28938.png&height=475&width=475",
     },
     {
       key: 2,

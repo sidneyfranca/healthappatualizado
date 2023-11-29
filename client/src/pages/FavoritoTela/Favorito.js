@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TextInput, FlatList } from "react-native";
 import { ToDoList } from "./ToDoList/Todolist";
-import { api } from "../../lib/api";
+import { api } from "../../lib/api.";
 
 export function Favorito() {
   const [data, setData] = useState([]);

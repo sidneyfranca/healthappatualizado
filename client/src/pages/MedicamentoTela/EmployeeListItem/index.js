@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import React, { useEffect, useState } from "react";
-import { api } from "../../../lib/api";
+import { api } from "../../../lib/api.";
 
 export function EmployeeListItem(props) {
   const [favoritar, setFavoritar] = useState(false);
@@ -19,8 +19,7 @@ export function EmployeeListItem(props) {
 
   const submeterInformacao = async (item) => {
     try {
-      await api.post("/favorito", { nome: item.nome, imagem: item.imagem });
-      console.log("Item favoritado com sucesso:", item);
+      await api.post("/favorito", { nome: item.nome, imagem: item.imagem }, { timeout: 100000 });
     } catch (error) {
       console.error("Erro ao favoritar item:", error);
     }
