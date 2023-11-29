@@ -1,19 +1,21 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
-import { Axios } from 'axios';
+import { api } from '../../lib/api';
+
 export default CadastromedView = () => {
 
-  const [fullName, setFullName] = useState()
+  const [nome, setNome] = useState()
   const [email, setEmail] = useState()
-  const [password, setPassword] = useState()
+  const [senha, setSenha] = useState()
   const [crm, setCrm] = useState()
   const [cpf, setCpf] = useState()
   const [especialidade, setEspecialidade] = useState()
   const [telefone, setTelefone] = useState();
+
   const handleCadastro = async () => {
     if (validateForm()) {
       const userData = {
-        nome: fullName,
+        nome: nome,
         email: email,
         senha: senha,
         cpf: cpf,
@@ -23,7 +25,7 @@ export default CadastromedView = () => {
       };
 
       try {
-        await api.post("/cadastro", userData);
+        await api.post("/cadastro/medico", userData);
         alert("Cadastro efetuado com sucesso!");
       } catch (error) {
         console.error(error);
@@ -32,7 +34,7 @@ export default CadastromedView = () => {
     }
   };
   const validateForm = () => {
-    if (!fullName || fullName.trim() === '') {
+    if (!nome || nome.trim() === '') {
       Alert.alert('Erro', 'Nome completo é obrigatório.');
       return false;
     }
@@ -41,7 +43,7 @@ export default CadastromedView = () => {
       Alert.alert('Erro', 'Email é obrigatório.');
       return false;
     }
-    if (!password || password.trim() === '') {
+    if (!senha || senha.trim() === '') {
       Alert.alert('Erro', 'Senha é obrigatória.');
       return false;
     }
@@ -66,14 +68,6 @@ export default CadastromedView = () => {
       return false;
     }
 
-
-    const handleCadastro = () => {
-      if (validateForm()) {
-        
-        Alert.alert('Cadastro efetuado com sucesso');
-      }
-    };
-     
     return true;
   };
 
@@ -93,7 +87,7 @@ export default CadastromedView = () => {
           placeholder="Nome Completo"
           keyboardType="email-address"
           underlineColorAndroid="transparent"
-          onChangeText={fullName => setFullName({ fullName })}
+          onChangeText={nome => setNome(nome)}
         />
       </View>
 
@@ -107,7 +101,7 @@ export default CadastromedView = () => {
           placeholder="Email"
           keyboardType="email-address"
           underlineColorAndroid="transparent"
-          onChangeText={email => setEmail({ email })}
+          onChangeText={email => setEmail(email)}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -120,7 +114,7 @@ export default CadastromedView = () => {
           placeholder="Senha"
           secureTextEntry={true}
           underlineColorAndroid="transparent"
-          onChangeText={password => setPassword({ password })}
+          onChangeText={senha => setSenha(senha)}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -133,7 +127,7 @@ export default CadastromedView = () => {
           placeholder="CRM"
           keyboardType='number-pad'
           underlineColorAndroid="transparent"
-          onChangeText={crm => setCrm({ crm })}
+          onChangeText={crm => setCrm(crm)}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -146,7 +140,7 @@ export default CadastromedView = () => {
           placeholder="CPF/CNPJ"
           keyboardType='number-pad'
           underlineColorAndroid="transparent"
-          onChangeText={cpf => setCpf({ cpf })}
+          onChangeText={cpf => setCpf(cpf)}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -159,7 +153,7 @@ export default CadastromedView = () => {
           placeholder="Especialidade"
           keyboardType='email-address'
           underlineColorAndroid="transparent"
-          onChangeText={especialidade => setEspecialidade({ especialidade })}
+          onChangeText={especialidade => setEspecialidade(especialidade)}
         />
       </View>
       <View style={styles.inputContainer}>
@@ -172,12 +166,12 @@ export default CadastromedView = () => {
           placeholder="Telefone"
           keyboardType='number-pad'
           underlineColorAndroid="transparent"
-          onChangeText={telefone => setTelefone({ telefone })}
+          onChangeText={telefone => setTelefone(telefone)}
         />
       </View>
       <TouchableOpacity
         style={[styles.buttonContainer, styles.signupButton]}
-        onPress={() => showAlert('Cadastro efetuado com sucesso')}>
+        onPress={handleCadastro}>
         <Text style={styles.signUpText}>Cadastrar</Text>
       </TouchableOpacity>
      

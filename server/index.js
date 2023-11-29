@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const mysql = require("mysql2");
 const cors = require("cors");
-const http = require("http").createServer(app)
 
 app.use(cors());
 app.use(express.json());
@@ -10,8 +9,8 @@ app.use(express.json());
 const db = mysql.createPool({
     host: "localhost",
     user: "root",
-    password: "healthapp12",
-    database: "healthapp",
+    password: "123123",
+    database: "bditens",
    
 })
 
@@ -54,32 +53,40 @@ app.delete("/item/:id_favorito", (req, res) => {
         } else {
             res.send(result)
         }
-
     })
-
-    
-    
     })   
     
-    app.post("/cadastro", (req, res) => {
-        const { nome, email, senha, cpf, crm, especialidade, telefone } = req.body;
-        let SQL = "INSERT INTO Usuario ( nome, email, senha, cpf, crm, especialidade, telefone ) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    app.post("/cadastro/paciente", (req, res) => {
+        const { nome, email, senha, cpf, idade, endereco, telefone } = req.body;
+        const SQL = "INSERT INTO Paciente (nome, email, senha, cpf, idade, endereco, telefone) VALUES (?, ?, ?, ?, ?, ?, ?)";
     
-        db.query(SQL, [nome, email, senha, cpf, crm, especialidade, telefone], (err, result) => {
+        db.query(SQL, [nome, email, senha, cpf, idade, endereco, telefone], (err, result) => {
             if (err) {
-                res.send(err);
+                console.error("Erro no cadastro:", err);
+                res.status(500).send("Erro ao cadastrar. Por favor, tente novamente.");
             } else {
-                res.send(result);
+                console.log("Cadastro efetuado com sucesso:", result);
+                res.send("Cadastro efetuado com sucesso!");
             }
         });
     });
 
     
-      
-      
-    
+    app.post("/cadastro/medico", (req, res) => {
+        const { nome, email, senha, cpf, crm, especialidade, telefone } = req.body;
+        const SQL = "INSERT INTO Medico (nome, email, senha, cpf, crm, especialidade, telefone) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+        db.query(SQL, [nome, email, senha, cpf, crm, especialidade, telefone], (err, result) => {
+            if (err) {
+                console.error("Erro no cadastro de médico:", err);
+                res.status(500).send("Erro ao cadastrar médico. Por favor, tente novamente.");
+            } else {
+                console.log("Cadastro de médico efetuado com sucesso:", result);
+                res.send("Cadastro de médico efetuado com sucesso!");
+            }
+        });
+    });
 
-app.listen(3008, () => {
+app.listen(3006, () => {
     console.log("rodando servidor");
 });
