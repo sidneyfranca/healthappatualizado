@@ -6,7 +6,7 @@ const Pharmacy = ({ navigation }) => {
     {
       key: "1",
       image: require("../../../assets/medi.png"),
-      text: "Medicamentos",
+      text: "Farmácia X",
     },
     {
       key: "2",

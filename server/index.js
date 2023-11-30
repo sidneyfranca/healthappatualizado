@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mysql = require("mysql2");
 const cors = require("cors");
+const bcrypt = require("bcrypt");
 
 app.use(cors());
 app.use(express.json());
@@ -56,11 +57,14 @@ app.delete("/item/:id_favorito", (req, res) => {
     })
     })   
     
-    app.post("/cadastro/paciente", (req, res) => {
+    app.post("/cadastro/paciente", async (req, res) => {
         const { nome, email, senha, cpf, idade, endereco, telefone } = req.body;
+        
+        const hashedSenha = await bcrypt.hash(senha, 10);
+
         const SQL = "INSERT INTO Paciente (nome, email, senha, cpf, idade, endereco, telefone) VALUES (?, ?, ?, ?, ?, ?, ?)";
     
-        db.query(SQL, [nome, email, senha, cpf, idade, endereco, telefone], (err, result) => {
+        db.query(SQL, [nome, email, hashedSenha, cpf, idade, endereco, telefone], (err, result) => {
             if (err) {
                 console.error("Erro no cadastro:", err);
                 res.status(500).send("Erro ao cadastrar. Por favor, tente novamente.");
@@ -71,6 +75,31 @@ app.delete("/item/:id_favorito", (req, res) => {
         });
     });
 
+    app.post("/login", async (req, res) => {
+        const { email, senha } = req.body;
+    
+        const SQL = "SELECT * FROM Paciente WHERE email = ?";
+        db.query(SQL, [email], async (err, result) => {
+            if (err) {
+                console.error("Erro ao buscar usuário:", err);
+                res.status(500).send("Erro interno. Por favor, tente novamente.");
+            } else {
+                if (result.length > 0) {
+                    const paciente = result[0];
+                    
+                    const senhaMatch = await bcrypt.compare(senha, paciente.senha);
+    
+                    if (senhaMatch) {
+                        res.send({ success: true, message: "Login efetuado com sucesso!" });
+                    } else {
+                        res.send({ success: false, message: "Credenciais inválidas." });
+                    }
+                } else {
+                    res.send({ success: false, message: "Usuário não encontrado." });
+                }
+            }
+        });
+    });
     
     app.post("/cadastro/medico", (req, res) => {
         const { nome, email, senha, cpf, crm, especialidade, telefone } = req.body;

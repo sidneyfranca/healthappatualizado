@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native'
-import Axios from "axios"
 
 export default LoginView = () => {
 
