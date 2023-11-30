@@ -1,71 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, FlatList } from 'react-native'
+import { api } from "../../lib/api";
 
 export default Users = () => {
-  const data = [
-    {
-      id: 1,
-      name: 'Dr. Marcos',
-      position: 'Clínica Médica',
-      image: 'https://bootdey.com/img/Content/avatar/avatar7.png',
-    },
-    {
-      id: 1,
-      name: 'Dr. João',
-      position: 'Hematologia',
-      image: 'https://bootdey.com/img/Content/avatar/avatar1.png',
-    },
-    {
-      id: 2,
-      name: 'Dr. Carlos',
-      position: 'Infectologia',
-      image: 'https://bootdey.com/img/Content/avatar/avatar6.png',
-    },
-    {
-      id: 3,
-      name: 'Dr. Jorge',
-      position: 'Reumatologia',
-      image: 'https://bootdey.com/img/Content/avatar/avatar5.png',
-    },
-    {
-      id: 4,
-      name: 'Dr. Manoel',
-      position: 'Psquiatria',
-      image: 'https://bootdey.com/img/Content/avatar/avatar4.png',
-    },
-    {
-      id: 5,
-      name: 'Dr. Juliano',
-      position: 'Pediatria',
-      image: 'https://bootdey.com/img/Content/avatar/avatar3.png',
-    },
-    {
-      id: 6,
-      name: 'Dr. Pedro',
-      position: 'Neurologia',
-      image: 'https://bootdey.com/img/Content/avatar/avatar2.png',
-    },
-    {
-      id: 8,
-      name: 'Dr. Luciano',
-      position: 'Oncologia',
-      image: 'https://bootdey.com/img/Content/avatar/avatar1.png',
-    },
-    {
-      id: 9,
-      name: 'Dr. Paulo',
-      position: 'Ortopedia',
-      image: 'https://bootdey.com/img/Content/avatar/avatar4.png',
-    },
-    {
-      id: 9,
-      name: 'Dr. Ricardo',
-      position: 'Urologia',
-      image: 'https://bootdey.com/img/Content/avatar/avatar7.png',
-    },
-  ]
 
-  const [users, setUsers] = useState(data)
+  const [medicos, setMedicos] = useState([]);
+
+  useEffect(() => {
+    const fetchMedicos = async () => {
+      try {
+        const response = await api.get('/medicos');
+        setMedicos(response.data);
+        console.log('Conteúdo de users:', response.data);
+      } catch (error) {
+        console.error('Erro ao obter médicos:', error);
+      }
+    };
+
+    fetchMedicos();
+  }, []);
 
   const clickEventListener = () => {
     Alert.alert('Option selected')
@@ -76,12 +29,10 @@ export default Users = () => {
       <FlatList
         style={styles.list}
         contentContainerStyle={styles.listContainer}
-        data={users}
+        data={medicos}
         horizontal={false}
         numColumns={2}
-        keyExtractor={item => {
-          return item.id
-        }}
+        keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
@@ -95,11 +46,10 @@ export default Users = () => {
                   source={{ uri: 'https://img.icons8.com/flat_round/64/000000/hearts.png' }}
                 />
               </View>
-              <Image style={styles.userImage} source={{ uri: item.image }} />
               <View style={styles.cardFooter}>
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={styles.name}>{item.name}</Text>
-                  <Text style={styles.position}>{item.position}</Text>
+                  <Text style={styles.name}>{item.nome}</Text>
+                  <Text style={styles.position}>{item.especialidade}</Text>
                   <TouchableOpacity
                     style={styles.followButton}
                     onPress={() => clickEventListener()}>

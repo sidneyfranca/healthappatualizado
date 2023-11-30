@@ -116,6 +116,17 @@ app.delete("/item/:id_favorito", (req, res) => {
         });
     });
 
+    app.get("/medicos", (req, res) => {
+        let sql = "SELECT * FROM Medico";
+        db.query(sql, (err, result) => {
+          if (err) {
+            res.send(err);
+          } else {
+            res.send(result);
+          }
+        });
+      });
+
 app.listen(3006, () => {
     console.log("rodando servidor");
 });
