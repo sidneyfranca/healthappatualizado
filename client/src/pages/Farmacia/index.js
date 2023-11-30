@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, FlatList } from 'react-native'
 
-const Pharmacy = ({ navigation }) => {
+export default Farmacia = ({ navigation }) => {
   const [data, setData] = useState([
     {
       key: "1",
@@ -42,8 +42,6 @@ const Pharmacy = ({ navigation }) => {
               <Image style={styles.userImage} source={item.image} />
               <View style={styles.cardFooter}>
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={styles.name}>{item.name}</Text>
-                  <Text style={styles.position}>{item.position}</Text>
                   <TouchableOpacity
                     style={styles.followButton}
                     onPress={() => Clicavel(item.key)}>
