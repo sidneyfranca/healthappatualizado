@@ -1,8 +1,10 @@
 import React from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native'
 
-export default LoginView = () => {
+export default LoginView = ({ route }) => {
+    const paciente = route.params?.paciente;
 
+    const pacienteId = paciente?.id;
 
 return (
         <View style={styles.container}>

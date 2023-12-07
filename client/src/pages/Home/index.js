@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Alert, StyleSheet, View, Image, TouchableOpacity, Text, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { api } from '../../lib/api';
 
 export default function InicioScreen() {
@@ -17,9 +18,14 @@ export default function InicioScreen() {
       };
 
     const response = await api.post("/login", userData);  
-
       if (response.data.success) {
-        navigation.navigate('MainTabNavigator', { screen: 'Perfil' });
+
+        const pacienteData = response.data.paciente;
+        console.log('Informações do paciente:', pacienteData);
+
+        await AsyncStorage.setItem('paciente', JSON.stringify(pacienteData));
+
+        navigation.navigate('MainTabNavigator', { screen: 'Medicos' });
       } else {
         Alert.alert('Erro', 'Credenciais inválidas. Verifique seu e-mail e senha.');
       }
@@ -29,9 +35,13 @@ export default function InicioScreen() {
     }
   };
 
-  
+
   return (
     <View style={styles.container}>
+       <View style={styles.content}>
+                <Text style={styles.title}>Bem-Vinde ao HealthApp!</Text>
+                <Text style={styles.desc}>{'Aqui você poderá acompanhar a sua saúde e ter atendimento especializado 24h por dia.'}</Text>
+            </View>
       <View style={styles.inputContainer}>
         <Image
           style={[styles.icon, styles.inputIcon]}
@@ -69,31 +79,11 @@ export default function InicioScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('CadastroMedico')} style={styles.buttonContainer}>
-        <Text>Cadastro de Médico</Text>
+        <Text style={styles.loginText}>Cadastro de Médico</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('CadastroPaciente')} style={styles.buttonContainer}>
-        <Text>Cadastro de Paciente</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.buttonContainer, styles.fabookButton]}>
-        <View style={styles.socialButtonContent}>
-          <Image
-            style={styles.icon}
-            source={{ uri: 'https://img.icons8.com/color/70/000000/facebook.png' }}
-          />
-          <Text style={styles.loginText}>Continue com Facebook</Text>
-        </View>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={[styles.buttonContainer, styles.googleButton]}>
-        <View style={styles.socialButtonContent}>
-          <Image
-            style={styles.icon}
-            source={{ uri: 'https://img.icons8.com/color/70/000000/youtube.png' }}
-          />
-          <Text style={styles.loginText}>Seguir no Youtube</Text>
-        </View>
+        <Text style={styles.loginText}>Cadastro de Paciente</Text>
       </TouchableOpacity>
     </View>
   );
@@ -139,15 +129,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     width: 250,
     borderRadius: 30,
+    backgroundColor: '#4682B4'
   },
   loginButton: {
-    backgroundColor: '#3498db',
-  },
-  fabookButton: {
-    backgroundColor: '#3b5998',
-  },
-  googleButton: {
-    backgroundColor: '#ff0000',
+    backgroundColor: '#3498db'
   },
   loginText: {
     color: 'white',
@@ -166,4 +151,21 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginRight: 5,
   },
+  content: {
+    flex: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+title: {
+    fontSize: 24,
+    color: '#00bffe',
+    fontWeight: 'bold',
+},
+desc: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 30,
+    color: '#808080',
+    marginBottom:45,
+},
 })

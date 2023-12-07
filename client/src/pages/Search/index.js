@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, FlatList } from 'react-native'
 import { api } from "../../lib/api";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default Users = () => {
 
   const [medicos, setMedicos] = useState([]);
+  const [selectedMedico, setSelectedMedico] = useState(null);
+  const [loggedInPatientId, setLoggedInPatientId] = useState(null);
+
 
   useEffect(() => {
     const fetchMedicos = async () => {
@@ -20,9 +25,51 @@ export default Users = () => {
     fetchMedicos();
   }, []);
 
-  const clickEventListener = () => {
-    Alert.alert('Option selected')
-  }
+  useEffect(() => {
+    const fetchPatientId = async () => {
+      try {
+        const patientData = await AsyncStorage.getItem('paciente');
+        const patient = JSON.parse(patientData);
+        setLoggedInPatientId(patient.id);
+      } catch (error) {
+        console.error('Erro ao obter o ID do paciente logado:', error);
+      }
+    };
+  
+    fetchPatientId();
+  }, []);
+
+  const clickEventListener = async (medico) => {
+  setSelectedMedico(medico);
+
+  Alert.alert(
+    'Informações do Médico',
+    `Nome: ${medico.nome}\nCRM: ${medico.crm}\nEspecialidade: ${medico.especialidade}\nTelefone: ${medico.telefone}\nHorário: 14:00 - 15:00`,
+    [
+      { text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+      {
+        text: 'Agendar',
+        onPress: async () => {
+          if (loggedInPatientId) {
+            try {
+              const response = await api.post('/agendar', {
+                id_paciente: loggedInPatientId,
+                id_medico: medico.id,
+              });
+      
+              console.log('Resposta do servidor:', response.data);
+            } catch (error) {
+              console.error('Erro ao agendar consulta:', error);
+            }
+          } else {
+            console.error('ID do paciente não disponível.');
+          }
+        },
+      }
+    ],
+    { cancelable: false }
+  );
+};
 
   return (
     <View style={styles.container}>
@@ -38,7 +85,7 @@ export default Users = () => {
             <TouchableOpacity
               style={styles.card}
               onPress={() => {
-                clickEventListener()
+                clickEventListener(item)
               }}>
               <View style={styles.cardHeader}>
                 <Image
@@ -52,8 +99,8 @@ export default Users = () => {
                   <Text style={styles.position}>{item.especialidade}</Text>
                   <TouchableOpacity
                     style={styles.followButton}
-                    onPress={() => clickEventListener()}>
-                    <Text style={styles.followButtonText}>Seguir</Text>
+                    onPress={() => clickEventListener(item)}>
+                    <Text style={styles.followButtonText}>Agendar</Text>
                   </TouchableOpacity>
                 </View>
               </View>

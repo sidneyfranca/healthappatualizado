@@ -36,7 +36,6 @@ const RootStackScreen = () => {
         name="MainTabNavigator"
         component={MainTabNavigator}
         options={{ headerShown: false }}
-        initialParams={{ screen: 'Perfil' }}
       />
       <RootStack.Screen
         name="CadastroMedico"
@@ -89,11 +88,11 @@ const MainTabNavigator = ({ navigation }) => {
       }}
     >
       <Tab.Screen
-        name='Perfil' 
-        component={Profile} 
+        name='Medicos'
+        component={Search}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Entypo name= 'user' size={size} color={color} />
+            <Feather name='search' size={size} color={color} />
           ),
           headerRight: () => (
             <TouchableOpacity
@@ -105,15 +104,7 @@ const MainTabNavigator = ({ navigation }) => {
             </TouchableOpacity>
           ),
         }}
-      />
-      <Tab.Screen
-        name='Medicos'
-        component={Search}
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <Feather name='search' size={size} color={color} />
-          ),
-        }}
+
       />
       <Tab.Screen
         name='Teleconsulta'

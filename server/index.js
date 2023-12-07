@@ -90,8 +90,10 @@ app.delete("/item/:id_favorito", (req, res) => {
                     const senhaMatch = await bcrypt.compare(senha, paciente.senha);
     
                     if (senhaMatch) {
-                        res.send({ success: true, message: "Login efetuado com sucesso!" });
+                        console.log('Paciente encontrado:', paciente);
+                        res.send({ success: true, message: "Login efetuado com sucesso!", paciente });
                     } else {
+                        console.log('Credenciais inválidas.');
                         res.send({ success: false, message: "Credenciais inválidas." });
                     }
                 } else {
@@ -123,6 +125,22 @@ app.delete("/item/:id_favorito", (req, res) => {
             res.send(err);
           } else {
             res.send(result);
+          }
+        });
+      });
+
+      app.post("/agendar", (req, res) => {
+        const { id_paciente, id_medico } = req.body;
+            
+        const SQL = "INSERT INTO Agendamento (id_paciente, id_medico) VALUES (?, ?)";
+      
+        db.query(SQL, [id_paciente, id_medico], (err, result) => {
+          if (err) {
+            console.error("Erro ao agendar consulta:", err);
+            res.status(500).send("Erro ao agendar consulta. Por favor, tente novamente.");
+          } else {
+            console.log("Consulta agendada com sucesso:", result);
+            res.send("Consulta agendada com sucesso!");
           }
         });
       });

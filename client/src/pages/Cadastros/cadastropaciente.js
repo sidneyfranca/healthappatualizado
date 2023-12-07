@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert, KeyboardAvoidingView  } from 'react-native'
 import { api } from '../../lib/api';
 export default CadastroView = () => {
 
@@ -75,7 +75,7 @@ export default CadastroView = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <View style={styles.inputContainer}>
         <Image
           style={styles.inputIcon}
@@ -174,7 +174,7 @@ export default CadastroView = () => {
         <Text style={styles.signUpText}>Cadastrar</Text>
       </TouchableOpacity>
      
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
