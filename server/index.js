@@ -75,7 +75,7 @@ app.delete("/item/:id_favorito", (req, res) => {
         });
     });
 
-    app.post("/login", async (req, res) => {
+    app.post("/login/paciente", async (req, res) => {
         const { email, senha } = req.body;
     
         const SQL = "SELECT * FROM Paciente WHERE email = ?";
@@ -128,6 +128,24 @@ app.delete("/item/:id_favorito", (req, res) => {
           }
         });
       });
+
+      app.post("/login/medico", (req, res) => {
+        const { email, senha } = req.body;
+        const SQL = "SELECT * FROM Medico WHERE email = ? AND senha = ?";
+    
+        db.query(SQL, [email, senha], (err, result) => {
+            if (err) {
+                console.error("Erro ao tentar fazer login:", err);
+                res.status(500).send("Erro ao tentar fazer login. Por favor, tente novamente.");
+            } else if (result.length > 0) {
+                console.log("Login de médico efetuado com sucesso:", result);
+                res.send({ success: true, medico: result[0] });
+            } else {
+                console.log("Credenciais inválidas. Verifique seu e-mail e senha.");
+                res.send({ success: false });
+            }
+        });
+    });
 
       app.post("/agendar", (req, res) => {
         const { id_paciente, id_medico } = req.body;
