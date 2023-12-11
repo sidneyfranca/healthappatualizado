@@ -2,89 +2,68 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, FlatList } from 'react-native'
 import { api } from "../../lib/api";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export default Users = () => {
+export default PacientesAgendados = () => {
 
-  const [medicos, setMedicos] = useState([]);
-  const [selectedMedico, setSelectedMedico] = useState(null);
-  const [loggedInPatientId, setLoggedInPatientId] = useState(null);
-
+  const [pacientes, setPacientes] = useState([]);
+  const [loggedInDoctorId, setLoggedInDoctorId] = useState(null);
 
   useEffect(() => {
-    const fetchMedicos = async () => {
+    const fetchLoggedInDoctorId = async () => {
       try {
-        const response = await api.get('/medicos');
-        setMedicos(response.data);
-        console.log('Conteúdo de users:', response.data);
+        const medicoData = await AsyncStorage.getItem('medico');
+        const medico = JSON.parse(medicoData);
+        setLoggedInDoctorId(medico.id || medico._id);
       } catch (error) {
-        console.error('Erro ao obter médicos:', error);
+        console.error('Erro ao obter o ID do médico logado:', error);
       }
     };
 
-    fetchMedicos();
-  }, []);
-
-  useEffect(() => {
-    const fetchPatientId = async () => {
+    const fetchScheduledAppointments = async () => {
       try {
-        const patientData = await AsyncStorage.getItem('paciente');
-        const patient = JSON.parse(patientData);
-        setLoggedInPatientId(patient.id);
+        const response = await api.get(`/agendamento/medico/${loggedInDoctorId}`);
+        setPacientes(response.data);
       } catch (error) {
-        console.error('Erro ao obter o ID do paciente logado:', error);
+        console.error('Erro ao obter agendamentos do médico:', error);
       }
     };
-  
-    fetchPatientId();
-  }, []);
 
-  const clickEventListener = async (medico) => {
-  setSelectedMedico(medico);
+    fetchLoggedInDoctorId();
+    fetchScheduledAppointments();
+  }, [loggedInDoctorId]);
 
-  Alert.alert(
-    'Informações do Médico',
-    `Nome: ${medico.nome}\nCRM: ${medico.crm}\nEspecialidade: ${medico.especialidade}\nTelefone: ${medico.telefone}\nHorário: 14:00 - 15:00`,
-    [
-      { text: 'Cancelar', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-      {
-        text: 'Agendar',
-        onPress: async () => {
-          if (loggedInPatientId) {
-            try {
-              const response = await api.post('/agendar', {
-                id_paciente: loggedInPatientId,
-                id_medico: medico.id,
-              });
+  const handleRemovePatient = async (pacienteId) => {
+    try {
+      const response = await api.delete(`/agendamento/remover/${pacienteId}/${loggedInDoctorId}`);
       
-              console.log('Resposta do servidor:', response.data);
-            } catch (error) {
-              console.error('Erro ao agendar consulta:', error);
-            }
-          } else {
-            console.error('ID do paciente não disponível.');
-          }
-        },
+      if (response.data.success) {
+        console.log('Agendamento removido com sucesso.');
+  
+        fetchScheduledAppointments();
+      } else {
+        console.error('Erro ao remover agendamento:', response.data.message);
       }
-    ],
-    { cancelable: false }
-  );
-};
+    } catch (error) {
+      console.error('Erro ao remover agendamento:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
         style={styles.list}
         contentContainerStyle={styles.listContainer}
-        data={medicos}
+        data={pacientes}
         horizontal={false}
         numColumns={2}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.id_agendamento.toString()}
         renderItem={({ item }) => {
+          console.log('Renderizando item:', item);
           return (
             <TouchableOpacity
               style={styles.card}
               onPress={() => {
-                clickEventListener(item)
               }}>
               <View style={styles.cardHeader}>
                 <Image
@@ -94,12 +73,22 @@ export default Users = () => {
               </View>
               <View style={styles.cardFooter}>
                 <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={styles.name}>{item.nome}</Text>
+                  <Text style={styles.name}>{item.nome_paciente}</Text>
                   <Text style={styles.position}>{item.especialidade}</Text>
                   <TouchableOpacity
-                    style={styles.followButton}
-                    onPress={() => clickEventListener(item)}>
-                    <Text style={styles.followButtonText}>Agendar</Text>
+                    style={[styles.button, { backgroundColor: 'red' }]}
+                    onPress={() => handleRemovePatient(item.id_paciente)}>
+                    <Icon name="delete" size={20} color="white" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => handlePrescribe(item.id_paciente)}>
+                    <Text style={styles.buttonText}>Prescrever</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => handleCall(item.telefone)}>
+                    <Icon name="phone" size={20} color="black" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -199,5 +188,19 @@ const styles = StyleSheet.create({
   icon: {
     height: 20,
     width: 20,
+  },
+  button: {
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 5,
+    width: 100,
+    borderRadius: 30,
+    backgroundColor: "#00BFFF",
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 20,
   },
 })

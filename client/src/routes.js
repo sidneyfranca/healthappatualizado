@@ -6,6 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Notification from './pages/Notification';
 import Search from './pages/Search';
 import Farmacia from './pages/Farmacia';
+import Paciente from './pages/Paciente';
 import { Medicamento } from "./pages/MedicamentoTela/Medicamento";
 import { Favorito } from "./pages/FavoritoTela/Favorito";
 import Profile from "./pages/Profile/index"
@@ -73,7 +74,9 @@ const FarmaciaStackScreen = () => {
   );
 };
 
-const MainTabNavigator = ({ navigation }) => {
+const MainTabNavigator = ({ navigation, route }) => {
+  const userType = route.params ? route.params.userType : 'paciente';
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -89,11 +92,12 @@ const MainTabNavigator = ({ navigation }) => {
     >
       <Tab.Screen
         name='Medicos'
-        component={Search}
+        component={userType === 'medico' ? Paciente : Search}
         options={{
           tabBarIcon: ({ size, color }) => (
             <Feather name='search' size={size} color={color} />
           ),
+          tabBarLabel: userType === 'medico' ? 'Pacientes' : 'Médicos',
           headerRight: () => (
             <TouchableOpacity
               style={{ marginRight: 15 }}
@@ -104,7 +108,6 @@ const MainTabNavigator = ({ navigation }) => {
             </TouchableOpacity>
           ),
         }}
-
       />
       <Tab.Screen
         name='Teleconsulta'

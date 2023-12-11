@@ -163,6 +163,35 @@ app.delete("/item/:id_favorito", (req, res) => {
         });
       });
 
+      app.get("/agendamento/medico/:id_medico", (req, res) => {
+        const { id_medico } = req.params;
+        const SQL = "SELECT * FROM Agendamento JOIN Paciente ON Agendamento.id_paciente = Paciente.id WHERE Agendamento.id_medico = ?";
+      
+        db.query(SQL, [id_medico], (err, result) => {
+          if (err) {
+            console.error("Erro ao obter pacientes agendados:", err);
+            res.status(500).send("Erro ao obter pacientes agendados. Por favor, tente novamente.");
+          } else {
+            res.send(result);
+          }
+        });
+      });
+
+      app.delete("/agendamento/remover/:id_paciente/:id_medico", (req, res) => {
+        const { id_paciente, id_medico } = req.params;
+        const SQL = "DELETE FROM Agendamento WHERE id_paciente = ? AND id_medico = ?";
+        
+        db.query(SQL, [id_paciente, id_medico], (err, result) => {
+          if (err) {
+            console.error("Erro ao remover agendamento:", err);
+            res.send({ success: false, message: "Erro ao remover agendamento." });
+          } else {
+            console.log("Agendamento removido com sucesso:", result);
+            res.send({ success: true, message: "Agendamento removido com sucesso." });
+          }
+        });
+      });
+
 app.listen(3006, () => {
     console.log("rodando servidor");
 });

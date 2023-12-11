@@ -27,7 +27,7 @@ export default function InicioScreen() {
 
         await AsyncStorage.setItem('paciente', JSON.stringify(pacienteData));
 
-        navigation.navigate('MainTabNavigator', { screen: 'Medicos' });
+        navigation.navigate('MainTabNavigator', { userType: 'paciente', screen: 'Pacientes' });
       } else {
         Alert.alert('Erro', 'Credenciais inválidas. Verifique seu e-mail e senha.');
       }
@@ -51,7 +51,7 @@ export default function InicioScreen() {
 
         await AsyncStorage.setItem('medico', JSON.stringify(medicoData));
 
-        navigation.navigate('MainTabNavigator', { screen: 'Medicos' });
+        navigation.navigate('MainTabNavigator', { userType: 'medico', screen: 'Medicos' });
       } else {
         Alert.alert('Erro', 'Credenciais inválidas. Verifique seu e-mail e senha.');
       }
